@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -10,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import entity.Professor;
+import utils.DbUtils;
 
 public class ProfessorDao {
 	
@@ -18,37 +18,15 @@ public class ProfessorDao {
 	public ProfessorDao(EntityManager em) {
 		this.em = em;
 	}
-
-	static final String DB_URL = "jdbc:postgresql://localhost:5432/TRAINING?useSSL=false&serverTimeZone=UTC";
-	static final String USER = "postgres";
-	static final String PASS = "root";
-	static final String DRIVER = "org.postgresql.Driver";
 	
 	static final String DELETE = "delete from professor where id_professor= ";
 	static final String FIND_ALL = "SELECT p FROM Professor p";
 
 
-
-	public static Connection connectDB() throws ClassNotFoundException {
-		try {
-			Connection con = null;
-
-			con = DriverManager.getConnection(
-					DB_URL,
-					USER, PASS);
-
-			return con;
-		} catch (SQLException e) {
-
-			System.out.println(e);
-		}
-		return null;
-	}
-
 	public int deleteProfessor(Long id) throws ClassNotFoundException {
 		Connection con=null;
 		PreparedStatement p=null;
-		con=ProfessorDao.connectDB();
+		con=DbUtils.connectDB();
 
 		try{
 			String sql=DELETE+id;

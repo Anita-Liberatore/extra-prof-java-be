@@ -49,6 +49,9 @@ public class ProfessorController extends HttpServlet {
 		case "/professors":
 			getAllProfessors(resp);
 			break;
+		case "/courses":
+			CourseController.getAllCourses(resp);
+			break;
 		case "/delete-professor":
 			try {
 				deleteProfessor(req,resp);
