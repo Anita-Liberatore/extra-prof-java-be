@@ -40,6 +40,7 @@ public class ProfessorDao {
 		return -1;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Professor> findAll() {
 		Query query = em.createQuery(FIND_ALL);
 		return query.getResultList();
