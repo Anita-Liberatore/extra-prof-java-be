@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +22,19 @@ public class RoutesController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doGet(req, resp);
+		String action = req.getServletPath();
+		
+		switch (action) {
+		case "/add-professor":
+			try {
+				ProfessorService.addProfessor(req, resp);
+			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
+			break;
+		default:
+			break;
+		}	
 	}
 
 	@Override
@@ -35,6 +48,13 @@ public class RoutesController extends HttpServlet {
 			break;
 		case "/professors":
 			ProfessorService.getAllProfessors(resp);
+			break;
+		case "/add-professor":
+			try {
+				ProfessorService.addProfessor(req, resp);
+			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
 			break;
 		case "/courses":
 			CourseService.getAllCourses(resp);
@@ -57,4 +77,6 @@ public class RoutesController extends HttpServlet {
 			break;
 		}	
 	}
+
+
 }

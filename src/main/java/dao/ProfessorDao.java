@@ -39,6 +39,23 @@ public class ProfessorDao {
 		}
 		return -1;
 	}
+	
+	public int addProfessor(Professor professor) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO professor (NAME_PROFESSOR, SURNAME) VALUES (?,?)");
+            prep.setString (1, professor.getName());
+            prep.setString (2, professor.getSurname());
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Professor> findAll() {

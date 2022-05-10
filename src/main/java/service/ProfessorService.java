@@ -1,6 +1,7 @@
 package service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import dao.ProfessorDao;
 import entity.Professor;
 import entity.Response;
+import utils.Util;
 
 public class ProfessorService {	
 	static EntityManagerFactory emf = Persistence.createEntityManagerFactory("db");
@@ -45,6 +47,20 @@ public class ProfessorService {
 		}  else {
 			setResponse(resp, "Error", "Entity not deleted correctly", "Error");
 		}
+	}
+	
+	public static void addProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		String json = Util.readInputStream(req.getInputStream());
+		Professor professor = GSON.fromJson(json, Professor.class);
+		ProfessorDao repository = new ProfessorDao(em);
+		int result = repository.addProfessor(professor);
+		System.out.println(result);
+		resp.setStatus(201);
+		resp.setHeader("Content-Type", "application/json");
+		resp.getOutputStream().println(GSON.toJson(professor));
+
 	}
 
 	private static void setResponse(HttpServletResponse resp, String result, String errorCode, String description) throws IOException {
