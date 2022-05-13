@@ -84,6 +84,4 @@ public class RoutesController extends HttpServlet {
 			break;
 		}	
 	}
-
-
 }
