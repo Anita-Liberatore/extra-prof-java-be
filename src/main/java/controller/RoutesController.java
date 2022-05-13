@@ -25,7 +25,7 @@ public class RoutesController extends HttpServlet {
 		String action = req.getServletPath();
 		
 		switch (action) {
-		case "/add-professor":
+		case "/professors":
 			try {
 				ProfessorService.addProfessor(req, resp);
 			} catch (ClassNotFoundException | IOException | SQLException e2) {
