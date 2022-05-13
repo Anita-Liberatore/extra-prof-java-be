@@ -45,4 +45,20 @@ public class CourseDao {
 		}
 		return -1;
 	}
+	
+	public int addCourse(Course couse) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO course (NAME_COURSE) VALUES (?)");
+            prep.setString (1, couse.getCourseName());
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
 }

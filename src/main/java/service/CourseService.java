@@ -1,6 +1,7 @@
 package service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import dao.CourseDao;
 import entity.Course;
 import entity.Response;
+import utils.Util;
 
 
 public class CourseService {
@@ -59,6 +61,20 @@ public class CourseService {
 			resp.setHeader("Content-Type", "application/json");
 			resp.getOutputStream().println(json);
 		}
+	}
+	
+	public static void addCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		String json = Util.readInputStream(req.getInputStream());
+		Course course = GSON.fromJson(json, Course.class);
+		CourseDao repository = new CourseDao(em);
+		int result = repository.addCourse(course);
+		System.out.println(result);
+		resp.setStatus(201);
+		resp.setHeader("Content-Type", "application/json");
+		resp.getOutputStream().println(GSON.toJson(course));
+
 	}
 
 
