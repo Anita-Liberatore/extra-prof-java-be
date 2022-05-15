@@ -43,9 +43,9 @@ public class ProfessorService {
 		int queryResult = repository.deleteProfessor(Long.parseLong(paramValue));
 		
 		if(queryResult==1) {
-			setResponse(resp, "Ok", "No error code", "Entity deleted correctly");
+			Util.setResponse(resp, "Ok", "No error code", "Entity deleted correctly");
 		}  else {
-			setResponse(resp, "Error", "Entity not deleted correctly", "Error");
+			Util.setResponse(resp, "Error", "Entity not deleted correctly", "Error");
 		}
 	}
 	
@@ -63,16 +63,6 @@ public class ProfessorService {
 
 	}
 
-	private static void setResponse(HttpServletResponse resp, String result, String errorCode, String description) throws IOException {
-		Response response = new Response();
-		response.setResult(result);
-		response.setErrorCode(errorCode);
-		response.setDescription(description);
-		String json = GSON.toJson(response);
-		resp.setStatus(200);
-		resp.setHeader("Content-Type", "application/json");
-		resp.getOutputStream().println(json);
-	}
 
 
 	public static void getPing(HttpServletResponse resp) throws IOException {

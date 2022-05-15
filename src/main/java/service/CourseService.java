@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.CourseDao;
+import dao.ProfessorDao;
 import entity.Course;
 import entity.Response;
 import utils.Util;
@@ -43,23 +44,11 @@ public class CourseService {
 		String paramValue = req.getParameter(id);
 		CourseDao repository = new CourseDao(em);
 		int queryResult = repository.deleteCourse(Long.parseLong(paramValue));
-		Response response = new Response();
+		
 		if(queryResult==1) {
-			response.setResult("Ok");
-			response.setErrorCode("No error code");
-			response.setDescription("Entity deleted correctly");
-			String json = GSON.toJson(response);
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json");
-			resp.getOutputStream().println(json);
+			Util.setResponse(resp, "Ok", "No error code", "Entity deleted correctly");
 		}  else {
-			response.setResult("Error");
-			response.setErrorCode("500");
-			response.setDescription("Entity NOT deleted correctly, ERROR");
-			String json = GSON.toJson(response);
-			resp.setStatus(500);
-			resp.setHeader("Content-Type", "application/json");
-			resp.getOutputStream().println(json);
+			Util.setResponse(resp, "Error", "Entity not deleted correctly", "Error");
 		}
 	}
 	

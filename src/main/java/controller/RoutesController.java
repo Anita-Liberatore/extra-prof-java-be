@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import service.AssociazioneService;
 import service.CourseService;
 import service.ProfessorService;
 
@@ -56,6 +57,9 @@ public class RoutesController extends HttpServlet {
 		case "/professors":
 			ProfessorService.getAllProfessors(resp);
 			break;
+		case "/associazioni":
+			AssociazioneService.getAllAssociazioni(resp);
+			break;
 		case "/add-professor":
 			try {
 				ProfessorService.addProfessor(req, resp);
@@ -69,6 +73,13 @@ public class RoutesController extends HttpServlet {
 		case "/delete-professor":
 			try {
 				ProfessorService.deleteProfessor(req,resp);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case "/delete-associazione":
+			try {
+				AssociazioneService.deleteAssociazione(req, resp);
 			} catch (NumberFormatException | ClassNotFoundException | IOException e1) {
 				e1.printStackTrace();
 			}
