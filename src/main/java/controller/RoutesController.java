@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import service.AssociazioneService;
 import service.CourseService;
 import service.ProfessorService;
+import service.RepetitionService;
 
 /**
  * Servlet implementation class RoutesController
@@ -40,6 +41,13 @@ public class RoutesController extends HttpServlet {
 				e2.printStackTrace();
 			}
 			break;
+		case "/associazioni":
+			try {
+				AssociazioneService.addAssociazione(req, resp);
+			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
+			break;
 		default:
 			break;
 		}	
@@ -59,6 +67,9 @@ public class RoutesController extends HttpServlet {
 			break;
 		case "/associazioni":
 			AssociazioneService.getAllAssociazioni(resp);
+			break;
+		case "/repetitions":
+			RepetitionService.getAllRepetitions(resp);
 			break;
 		case "/add-professor":
 			try {

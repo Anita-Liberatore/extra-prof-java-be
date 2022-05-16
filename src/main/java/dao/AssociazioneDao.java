@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import entity.Associazione;
+import request.AssociazioniRequest;
 import utils.DbUtils;
 
 public class AssociazioneDao {
@@ -36,6 +37,23 @@ public class AssociazioneDao {
 			p.execute();
 			return 1;
 		}catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
+	
+	public int addAssociazione(AssociazioniRequest associazioniRequest) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO associazione_corso_docente (id_corso, id_docente) VALUES (?,?)");
+            prep.setLong(1, associazioniRequest.getIdCourse());
+            prep.setLong(2, associazioniRequest.getIdProfessor());
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
 			System.out.println(e);
 
 		}

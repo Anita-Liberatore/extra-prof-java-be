@@ -1,6 +1,7 @@
 package service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,8 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.AssociazioneDao;
-import dao.ProfessorDao;
 import entity.Associazione;
+import request.AssociazioniRequest;
 import utils.Util;
 
 public class AssociazioneService {
@@ -47,5 +48,19 @@ public class AssociazioneService {
 		}  else {
 			Util.setResponse(resp, "Error", "Course-professor not deleted correctly", "Error");
 		}
+	}
+	
+	public static void addAssociazione(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		String json = Util.readInputStream(req.getInputStream());
+		AssociazioniRequest associazioniRequest = GSON.fromJson(json, AssociazioniRequest.class);
+		AssociazioneDao repository = new AssociazioneDao(em);
+		int result = repository.addAssociazione(associazioniRequest);
+		System.out.println(result);
+		resp.setStatus(201);
+		resp.setHeader("Content-Type", "application/json");
+		resp.getOutputStream().println(GSON.toJson(associazioniRequest));
+
 	}
 }
