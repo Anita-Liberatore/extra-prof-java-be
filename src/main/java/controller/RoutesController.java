@@ -55,10 +55,18 @@ public class RoutesController extends HttpServlet {
 				e2.printStackTrace();
 			}
 			break;
+		case "/repetitions":
+			try {
+				RepetitionService.updateRepetitions(req, resp);
+			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
+			break;
 		default:
 			break;
 		}	
 	}
+
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

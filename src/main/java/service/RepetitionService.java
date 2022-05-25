@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import dao.ProfessorDao;
 import dao.RepetitionDao;
-import entity.Professor;
 import entity.Repetition;
 import utils.Util;
 
@@ -48,6 +46,17 @@ public class RepetitionService {
 		resp.setStatus(201);
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(GSON.toJson(repetition));
+
+	}
+	
+	public static void updateRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		
+		String id = "id";
+		String paramValue = req.getParameter(id);
+		String json = Util.readInputStream(req.getInputStream());
+	
 
 	}
 }
