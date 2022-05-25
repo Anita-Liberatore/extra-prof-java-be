@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.ProfessorDao;
+import entity.Course;
 import entity.Professor;
 import entity.Response;
 import utils.Util;
@@ -46,6 +47,20 @@ public class ProfessorService {
 			Util.setResponse(resp, "Ok", "No error code", "Entity deleted correctly");
 		}  else {
 			Util.setResponse(resp, "Error", "Entity not deleted correctly", "Error");
+		}
+	}
+	
+	public static void getProfessorByCourses(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		String id = "id";
+		String paramValue = req.getParameter(id);
+		if(paramValue!=null && paramValue != "") {
+			ProfessorDao repository = new ProfessorDao(em);
+			List<Professor> queryResult = repository.professorsByCourse(Long.parseLong(paramValue));
+			String json = GSON.toJson(queryResult);
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
 		}
 	}
 	

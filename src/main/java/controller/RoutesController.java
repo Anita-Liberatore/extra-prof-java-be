@@ -48,6 +48,13 @@ public class RoutesController extends HttpServlet {
 				e2.printStackTrace();
 			}
 			break;
+		case "/add-repetitions":
+			try {
+				RepetitionService.addRepetitions(req, resp);
+			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
+			break;
 		default:
 			break;
 		}	
@@ -65,18 +72,18 @@ public class RoutesController extends HttpServlet {
 		case "/professors":
 			ProfessorService.getAllProfessors(resp);
 			break;
+		case "/professors-course":
+			try {
+				ProfessorService.getProfessorByCourses(req, resp);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e3) {
+				e3.printStackTrace();
+			}
+			break;
 		case "/associazioni":
 			AssociazioneService.getAllAssociazioni(resp);
 			break;
 		case "/repetitions":
 			RepetitionService.getAllRepetitions(resp);
-			break;
-		case "/add-professor":
-			try {
-				ProfessorService.addProfessor(req, resp);
-			} catch (ClassNotFoundException | IOException | SQLException e2) {
-				e2.printStackTrace();
-			}
 			break;
 		case "/courses":
 			CourseService.getAllCourses(resp);

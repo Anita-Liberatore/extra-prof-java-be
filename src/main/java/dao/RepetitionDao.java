@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import entity.Associazione;
+import entity.Professor;
 import entity.Repetition;
 import utils.DbUtils;
 
@@ -24,6 +26,26 @@ public class RepetitionDao {
 
 	static final String DELETE = "delete from professor where id_professor= ";
 
+	public int addRepetition(Repetition repetition) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO repetitions (ID_PROFESSOR, ID_COURSE, HOUR_REPETITION, DAY_REPETITIONS, STATUS, USER_REPETITION) VALUES (?,?,?,?,?,?)");
+            prep.setLong(1, repetition.getIdProfessor());
+            prep.setLong (2, repetition.getIdCourse());
+            prep.setString(3, repetition.getHour());
+            prep.setString(4, repetition.getDay());
+            prep.setString(5, repetition.getStatus());
+            prep.setString(6, repetition.getUser());
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
 
 	public List<Repetition> findAll() {
 		List<Repetition>  listRepetitions = new ArrayList<>();
