@@ -35,6 +35,16 @@ public class RepetitionService {
 		resp.getOutputStream().println(json);
 	}
 	
+	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		RepetitionDao repository = new RepetitionDao(em);
+		List<Repetition> repetition = repository.findAll();
+		String json = GSON.toJson(repetition);
+		resp.setStatus(200);
+		resp.setHeader("Content-Type", "application/json");
+		resp.getOutputStream().println(json);
+	}
+	
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
