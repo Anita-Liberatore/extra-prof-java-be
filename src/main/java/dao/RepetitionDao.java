@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import entity.Associazione;
-import entity.Professor;
 import entity.Repetition;
 import utils.DbUtils;
 
@@ -38,6 +35,23 @@ public class RepetitionDao {
             prep.setString(4, repetition.getDay());
             prep.setString(5, repetition.getStatus());
             prep.setString(6, repetition.getUser());
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
+	
+	public int updateRepetition(Long id, String status) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("UPDATE repetitions SET status = ? WHERE ID_REPETITIONS = ?");
+			prep.setString(1, status);
+			prep.setLong(2, id);
             prep.executeUpdate ();
 	        return 1;
 		} catch(SQLException  e){

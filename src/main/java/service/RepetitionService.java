@@ -56,6 +56,11 @@ public class RepetitionService {
 		String id = "id";
 		String paramValue = req.getParameter(id);
 		String json = Util.readInputStream(req.getInputStream());
+		Repetition repetition = GSON.fromJson(json,Repetition.class);
+		RepetitionDao repository = new RepetitionDao(em);
+		int result = repository.updateRepetition(Long.parseLong(paramValue), repetition.getStatus());
+		System.out.println(result);
+		resp.setStatus(204);
 	
 
 	}
