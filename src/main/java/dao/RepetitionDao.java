@@ -28,13 +28,14 @@ public class RepetitionDao {
 		con=DbUtils.connectDB();
 		
 		try {
-			PreparedStatement prep = con.prepareStatement ("INSERT INTO repetitions (ID_PROFESSOR, ID_COURSE, HOUR_REPETITION, DAY_REPETITIONS, STATUS, USER_REPETITION) VALUES (?,?,?,?,?,?)");
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO repetitions (ID_PROFESSOR, ID_COURSE, HOUR_REPETITION, DAY_REPETITIONS, STATUS, USER_REPETITION, ISDISPONIBILE) VALUES (?,?,?,?,?,?,?)");
             prep.setLong(1, repetition.getIdProfessor());
             prep.setLong (2, repetition.getIdCourse());
             prep.setString(3, repetition.getHour());
             prep.setString(4, repetition.getDay());
             prep.setString(5, repetition.getStatus());
             prep.setString(6, repetition.getUser());
+            prep.setString(7, "NO");
             prep.executeUpdate ();
 	        return 1;
 		} catch(SQLException  e){
@@ -45,6 +46,23 @@ public class RepetitionDao {
 	}
 	
 	public int updateRepetition(Long id, String status) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("UPDATE repetitions SET status = ? WHERE ID_REPETITIONS = ?");
+			prep.setString(1, status);
+			prep.setLong(2, id);
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
+	
+	public int updateRepetitionDelete(Long id, String status) throws ClassNotFoundException, SQLException {
 		Connection con = null;
 		con=DbUtils.connectDB();
 		

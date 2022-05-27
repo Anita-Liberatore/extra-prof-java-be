@@ -74,4 +74,20 @@ public class RepetitionService {
 	
 
 	}
+	
+	public static void updateRepetitionsDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		
+		String id = "id";
+		String paramValue = req.getParameter(id);
+		String json = Util.readInputStream(req.getInputStream());
+		Repetition repetition = GSON.fromJson(json,Repetition.class);
+		RepetitionDao repository = new RepetitionDao(em);
+		int result = repository.updateRepetitionDelete(Long.parseLong(paramValue), repetition.getStatus());
+		System.out.println(result);
+		resp.setStatus(204);
+	
+
+	}
 }

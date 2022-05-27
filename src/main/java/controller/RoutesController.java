@@ -62,6 +62,13 @@ public class RoutesController extends HttpServlet {
 				e2.printStackTrace();
 			}
 			break;
+		case "/repetitions-delete":
+			try {
+				RepetitionService.updateRepetitionsDelete(req, resp);
+			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
+			break;
 		default:
 			break;
 		}	

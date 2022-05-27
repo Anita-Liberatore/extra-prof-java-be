@@ -13,6 +13,7 @@ public class Repetition {
 	private String nameProfessor;
 	private String surnameProfessor;
 	private String courseName;
+	private String isdisponibile;
 	/**
 	 * @return the id
 	 */
@@ -133,12 +134,27 @@ public class Repetition {
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
+	/**
+	 * @return the isdisponibile
+	 */
+	public String getIsdisponibile() {
+		return isdisponibile;
+	}
+	/**
+	 * @param isdisponibile the isdisponibile to set
+	 */
+	public void setIsdisponibile(String isdisponibile) {
+		this.isdisponibile = isdisponibile;
+	}
 	@Override
 	public String toString() {
 		return "Repetition [id=" + id + ", idProfessor=" + idProfessor + ", idCourse=" + idCourse + ", hour=" + hour
 				+ ", day=" + day + ", status=" + status + ", user=" + user + ", nameProfessor=" + nameProfessor
-				+ ", surnameProfessor=" + surnameProfessor + ", courseName=" + courseName + "]";
+				+ ", surnameProfessor=" + surnameProfessor + ", courseName=" + courseName + ", isdisponibile="
+				+ isdisponibile + "]";
 	}
+
+	
 
 	
 
