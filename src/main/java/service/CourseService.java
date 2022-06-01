@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder;
 import dao.CourseDao;
 import dao.ProfessorDao;
 import entity.Course;
-import entity.Response;
+import response.Response;
 import utils.Util;
 
 

@@ -2,6 +2,7 @@ package service;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,9 +15,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.ProfessorDao;
-import entity.Course;
 import entity.Professor;
-import entity.Response;
+import response.ProfessorNotDisponibilityResponse;
+import response.ProfessorResponse;
+import response.Response;
 import utils.Util;
 
 public class ProfessorService {	
@@ -34,6 +36,10 @@ public class ProfessorService {
 		resp.setStatus(200);
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(json);
+	}
+	
+	public static void getNotDisponibilityProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		
 	}
 
 	public static void deleteProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException, NumberFormatException, ClassNotFoundException {
@@ -53,11 +59,51 @@ public class ProfessorService {
 	public static void getProfessorByCourses(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		String id = "id";
-		String paramValue = req.getParameter(id);
-		if(paramValue!=null && paramValue != "") {
+		String paramValueCourse = req.getParameter(id);
+		
+		String day = "day";
+		String paramValueDay = req.getParameter(day);
+		
+		
+		
+		if(paramValueCourse!=null && paramValueCourse != "") {
+			
 			ProfessorDao repository = new ProfessorDao(em);
-			List<Professor> queryResult = repository.professorsByCourse(Long.parseLong(paramValue));
-			String json = GSON.toJson(queryResult);
+			List<Professor> professorByCourse = repository.professorsByCourse(Long.parseLong(paramValueCourse));
+			
+			
+			
+			List<ProfessorResponse> professorData = new ArrayList<>();
+			
+			
+			
+			List<String> notDisponibility = new ArrayList<>();
+
+			for(Professor p: professorByCourse) {
+				notDisponibility.clear();
+				ProfessorResponse data = new ProfessorResponse();
+				List<ProfessorNotDisponibilityResponse> professorNotDisponibilityResponse = repository.getNotDisponibility(p.getId(), paramValueDay);
+				
+				for(ProfessorNotDisponibilityResponse d : professorNotDisponibilityResponse) {
+					notDisponibility.add(d.getHourRepetition());
+				}
+				
+				List<String> hours = new ArrayList<>();
+				hours.add("15-16");
+				hours.add("16-17");
+				hours.add("17-18");
+				hours.add("18-19");
+				
+				hours.removeAll(notDisponibility);
+				
+				data.setId(p.getId());
+				data.setName(p.getName());
+				data.setSurname(p.getSurname());
+				data.setHours(hours);
+				professorData.add(data);
+			}
+			
+			String json = GSON.toJson(professorData);
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json");
 			resp.getOutputStream().println(json);

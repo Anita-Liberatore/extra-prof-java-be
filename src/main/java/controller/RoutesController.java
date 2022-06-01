@@ -87,6 +87,9 @@ public class RoutesController extends HttpServlet {
 		case "/professors":
 			ProfessorService.getAllProfessors(resp);
 			break;
+		case "/professors-disponibility":
+			ProfessorService.getNotDisponibilityProfessor(req, resp);
+			break;
 		case "/professors-course":
 			try {
 				ProfessorService.getProfessorByCourses(req, resp);

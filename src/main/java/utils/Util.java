@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import entity.Response;
+import response.Response;
 
 import static java.util.stream.Collectors.joining;
 
