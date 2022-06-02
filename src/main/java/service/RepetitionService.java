@@ -20,12 +20,12 @@ import utils.Util;
 public class RepetitionService {
 
 	static EntityManagerFactory emf = Persistence.createEntityManagerFactory("db");
-    static EntityManager em = emf.createEntityManager();
+	static EntityManager em = emf.createEntityManager();
 
 	private static final Gson GSON = new GsonBuilder().create();
 
 
-	public static void getAllRepetitions(HttpServletResponse resp) throws IOException {
+	public static void getAllRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		RepetitionDao repository = new RepetitionDao(em);
 		List<Repetition> repetition = repository.findAll();
@@ -33,8 +33,9 @@ public class RepetitionService {
 		resp.setStatus(200);
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(json);
+
 	}
-	
+
 	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		RepetitionDao repository = new RepetitionDao(em);
@@ -44,10 +45,11 @@ public class RepetitionService {
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(json);
 	}
-	
+
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+
 		String json = Util.readInputStream(req.getInputStream());
 		Repetition repetition = GSON.fromJson(json, Repetition.class);
 		RepetitionDao repository = new RepetitionDao(em);
@@ -58,11 +60,11 @@ public class RepetitionService {
 		resp.getOutputStream().println(GSON.toJson(repetition));
 
 	}
-	
+
 	public static void updateRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
-		
+
 		String id = "id";
 		String paramValue = req.getParameter(id);
 		String json = Util.readInputStream(req.getInputStream());
@@ -71,14 +73,14 @@ public class RepetitionService {
 		int result = repository.updateRepetition(Long.parseLong(paramValue), repetition.getStatus());
 		System.out.println(result);
 		resp.setStatus(204);
-	
+
 
 	}
-	
+
 	public static void updateRepetitionsDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
-		
+
 		String id = "id";
 		String paramValue = req.getParameter(id);
 		String json = Util.readInputStream(req.getInputStream());
@@ -87,7 +89,7 @@ public class RepetitionService {
 		int result = repository.updateRepetitionDelete(Long.parseLong(paramValue), repetition.getStatus());
 		System.out.println(result);
 		resp.setStatus(204);
-	
+
 
 	}
 }

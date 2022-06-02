@@ -23,6 +23,8 @@ public class Util {
 	}
 	
 	public static void setResponse(HttpServletResponse resp, String result, String errorCode, String description) throws IOException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
 		Response response = new Response();
 		response.setResult(result);
 		response.setErrorCode(errorCode);

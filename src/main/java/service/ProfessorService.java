@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +29,8 @@ public class ProfessorService {
 	private static final Gson GSON = new GsonBuilder().create();
 
 
-	public static void getAllProfessors(HttpServletResponse resp) throws IOException {
+	public static void getAllProfessors(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		HttpSession s = req.getSession(false);
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		ProfessorDao repository = new ProfessorDao(em);
 		List<Professor> professorsList = repository.findAll();
@@ -54,6 +56,7 @@ public class ProfessorService {
 	
 	public static void getProfessorByCourses(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
+		HttpSession s = req.getSession(false);
 		String id = "id";
 		String paramValueCourse = req.getParameter(id);
 		

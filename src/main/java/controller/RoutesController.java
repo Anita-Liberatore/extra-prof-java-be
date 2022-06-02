@@ -92,8 +92,13 @@ public class RoutesController extends HttpServlet {
 				e2.printStackTrace();
 			}
 			break;
+		case "/logout":
+
+			LoginService.logout(req, resp);
+
+			break;
 		case "/professors":
-			ProfessorService.getAllProfessors(resp);
+			ProfessorService.getAllProfessors(req, resp);
 			break;
 		case "/professors-course":
 			try {
@@ -106,7 +111,7 @@ public class RoutesController extends HttpServlet {
 			AssociazioneService.getAllAssociazioni(resp);
 			break;
 		case "/repetitions":
-			RepetitionService.getAllRepetitions(resp);
+			RepetitionService.getAllRepetitions(req, resp);
 			break;
 		case "/courses":
 			CourseService.getAllCourses(resp);
