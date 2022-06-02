@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import service.AssociazioneService;
 import service.CourseService;
+import service.LoginService;
 import service.ProfessorService;
 import service.RepetitionService;
 
@@ -84,11 +85,15 @@ public class RoutesController extends HttpServlet {
 		case "/ping":
 			ProfessorService.getPing(resp);
 			break;
+		case "/login":
+			try {
+				LoginService.getUserByEmail(req, resp);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e2) {
+				e2.printStackTrace();
+			}
+			break;
 		case "/professors":
 			ProfessorService.getAllProfessors(resp);
-			break;
-		case "/professors-disponibility":
-			ProfessorService.getNotDisponibilityProfessor(req, resp);
 			break;
 		case "/professors-course":
 			try {

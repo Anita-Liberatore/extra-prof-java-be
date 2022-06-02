@@ -38,10 +38,6 @@ public class ProfessorService {
 		resp.getOutputStream().println(json);
 	}
 	
-	public static void getNotDisponibilityProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		
-	}
-
 	public static void deleteProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException, NumberFormatException, ClassNotFoundException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		String id = "id";
