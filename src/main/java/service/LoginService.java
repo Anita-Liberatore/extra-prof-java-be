@@ -1,8 +1,6 @@
 package service;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Enumeration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,24 +22,28 @@ public class LoginService {
 	static EntityManager em = emf.createEntityManager();
 
 	private static final Gson GSON = new GsonBuilder().create();
-	
 
+	public static void login(HttpServletRequest req, HttpServletResponse resp) {
+		HttpSession s = req.getSession();
+		String jsessionID = s.getId(); // estraggo il session ID
+		System.out.println("JSessionID:" + jsessionID);
+
+	}
+	
 	public static void getUserByEmail(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		String username = "username";
 		String paramUsername = req.getParameter(username);
-		
+
 		LoginDao repository = new LoginDao(em);
 		User user = repository.userByEmail(paramUsername);
-		if(user!=null) {
-			HttpSession s = req.getSession();
-			String jsessionID = s.getId(); // estraggo il session ID
+		if(user.getUsername()!=null) {
+			LoginService.login(req, resp);
+			HttpSession session = req.getSession(false);
+			session.setAttribute("userName", paramUsername);
+			session.setAttribute("session", session.getId());// salvo dei dati in sessione...
 
-			System.out.println("JSessionID:" + jsessionID);
-
-			s.setAttribute("userName", paramUsername); // salvo dei dati in sessione...
-
-			if (jsessionID!= null) {
+			if (session.getId()!= null) {
 				String json = GSON.toJson(user);
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json");
@@ -50,6 +52,7 @@ public class LoginService {
 		} else {
 			Response response = new Response();
 			response.setDescription("Login non autorizzato");
+			response.setErrorCode("503");
 			String json = GSON.toJson(response);
 			resp.setStatus(503);
 			resp.setHeader("Content-Type", "application/json");
@@ -57,16 +60,17 @@ public class LoginService {
 		}
 
 	}
-	
+
 	public static void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession session=req.getSession(false);  
+		HttpSession session=req.getSession();  
 		if(session!=null) {
 			String jsessionID = session.getId(); // estraggo il session ID
 			System.out.println("JSessionID:" + jsessionID);
 			session.invalidate();  
 			Response response = new Response();
 			response.setDescription("Logout avvenuto correttamente");
+			response.setErrorCode("200");
 			String json = GSON.toJson(response);
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json");

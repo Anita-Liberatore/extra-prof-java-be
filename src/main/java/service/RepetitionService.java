@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,6 +28,7 @@ public class RepetitionService {
 
 	public static void getAllRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
+		HttpSession session = req.getSession(false);
 		RepetitionDao repository = new RepetitionDao(em);
 		List<Repetition> repetition = repository.findAll();
 		String json = GSON.toJson(repetition);
@@ -49,7 +51,7 @@ public class RepetitionService {
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
-
+		HttpSession sessionId = req.getSession();
 		String json = Util.readInputStream(req.getInputStream());
 		Repetition repetition = GSON.fromJson(json, Repetition.class);
 		RepetitionDao repository = new RepetitionDao(em);
