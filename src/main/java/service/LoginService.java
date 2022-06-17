@@ -32,7 +32,9 @@ public class LoginService {
 	
 	public static void getUserByEmail(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Credentials", "true");
 		String username = "username";
+		
 		String paramUsername = req.getParameter(username);
 
 		LoginDao repository = new LoginDao(em);

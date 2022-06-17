@@ -107,6 +107,13 @@ public class RoutesController extends HttpServlet {
 				e3.printStackTrace();
 			}
 			break;
+		case "/admin-filter-panel":
+			try {
+				ProfessorService.getFilterPanelAdmin(req, resp);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e3) {
+				e3.printStackTrace();
+			}
+			break;
 		case "/associazioni":
 			AssociazioneService.getAllAssociazioni(resp);
 			break;

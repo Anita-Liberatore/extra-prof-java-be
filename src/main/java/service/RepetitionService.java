@@ -28,9 +28,13 @@ public class RepetitionService {
 
 	public static void getAllRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession session = req.getSession(false);
+		
+		String user = "user";
+		String paramValue = req.getParameter(user);
+		
+		String session = (String) req.getSession().getAttribute("session");
 		RepetitionDao repository = new RepetitionDao(em);
-		List<Repetition> repetition = repository.findAll();
+		List<Repetition> repetition = repository.findAll(paramValue);
 		String json = GSON.toJson(repetition);
 		resp.setStatus(200);
 		resp.setHeader("Content-Type", "application/json");
@@ -38,15 +42,15 @@ public class RepetitionService {
 
 	}
 
-	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
-		resp.addHeader("Access-Control-Allow-Origin", "*");
-		RepetitionDao repository = new RepetitionDao(em);
-		List<Repetition> repetition = repository.findAll();
-		String json = GSON.toJson(repetition);
-		resp.setStatus(200);
-		resp.setHeader("Content-Type", "application/json");
-		resp.getOutputStream().println(json);
-	}
+//	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
+//		resp.addHeader("Access-Control-Allow-Origin", "*");
+//		RepetitionDao repository = new RepetitionDao(em);
+//		List<Repetition> repetition = repository.findAll();
+//		String json = GSON.toJson(repetition);
+//		resp.setStatus(200);
+//		resp.setHeader("Content-Type", "application/json");
+//		resp.getOutputStream().println(json);
+//	}
 
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");

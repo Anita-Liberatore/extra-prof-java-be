@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.ProfessorDao;
+import entity.Course;
 import entity.Professor;
 import response.ProfessorNotDisponibilityResponse;
 import response.ProfessorResponse;
@@ -108,6 +109,20 @@ public class ProfessorService {
 			resp.getOutputStream().println(json);
 		}
 	}
+
+	public static void getFilterPanelAdmin(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		String id = "professor";
+		String paramValueProfessor = req.getParameter(id);
+		ProfessorDao repository = new ProfessorDao(em);
+		List<Course> courseList = repository.filterPanelAdmin(Long.parseLong(paramValueProfessor));
+		String json = GSON.toJson(courseList);
+		resp.setStatus(200);
+		resp.setHeader("Content-Type", "application/json");
+		resp.getOutputStream().println(json);
+	}
+
+	
 	
 	public static void addProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");

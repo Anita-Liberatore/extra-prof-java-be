@@ -79,7 +79,7 @@ public class RepetitionDao {
 		return -1;
 	}
 
-	public List<Repetition> findAll() {
+	public List<Repetition> findAll(String userParam) {
 		List<Repetition>  listRepetitions = new ArrayList<>();
 		Connection con=null;
 		try {
@@ -91,7 +91,7 @@ public class RepetitionDao {
 		String query = "SELECT r.id_repetitions, p.name_professor, p.surname, c.name_course, r.hour_repetition, r.day_repetitions, r.status, r.user_repetition "
 				+ "	 FROM repetitions r "
 				+ "	 JOIN professor p on r.id_professor = p.id_professor "
-				+ "	 JOIN course c on r.id_course = c.id_course";
+				+ "	 JOIN course c on r.id_course = c.id_course where user_repetition = '"+userParam +"'";
 
 		Statement stmt;
 		try {

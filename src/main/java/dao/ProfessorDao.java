@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import entity.Course;
 import entity.Professor;
 import response.ProfessorNotDisponibilityResponse;
 import utils.DbUtils;
@@ -117,6 +118,45 @@ public class ProfessorDao {
 				professor.setName(name);
 				professor.setSurname(surname);
 				list.add(professor);
+			}
+
+			stmt.close();
+			con.close();
+
+			return list;
+
+		} catch(SQLException ex) {
+			System.err.print("SQLException: ");
+			System.err.println(ex.getMessage());
+		}
+		return new ArrayList<>();  
+	}
+	
+	public List<Course> filterPanelAdmin(Long id) throws ClassNotFoundException {
+		List<Course>  list = new ArrayList<>();
+		Connection con=null;
+		try {
+			con=DbUtils.connectDB();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+
+		Statement stmt;
+		try {
+
+			stmt = con.createStatement();              
+
+			ResultSet rs = stmt.executeQuery("select id_course, name_course from course where id_course not in (select distinct id_corso from associazione_corso_docente where id_docente =" +id +")");
+
+			while (rs.next()) {
+				Course course = new Course();
+				Long idCourse = rs.getLong(1);
+				String courseName = rs.getString(2);
+				
+				course.setId(idCourse);
+				course.setCourseName(courseName);
+				list.add(course);
 			}
 
 			stmt.close();
