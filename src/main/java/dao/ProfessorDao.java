@@ -113,7 +113,6 @@ public class ProfessorDao {
 				Long idProfessor = rs.getLong(1);
 				String name = rs.getString(2);
 				String surname = rs.getString(3);
-
 				professor.setId(idProfessor);
 				professor.setName(name);
 				professor.setSurname(surname);
@@ -131,6 +130,7 @@ public class ProfessorDao {
 		}
 		return new ArrayList<>();  
 	}
+	
 	
 	public List<Course> filterPanelAdmin(Long id) throws ClassNotFoundException {
 		List<Course>  list = new ArrayList<>();

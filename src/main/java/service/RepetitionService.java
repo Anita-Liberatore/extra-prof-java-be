@@ -32,7 +32,7 @@ public class RepetitionService {
 		String user = "user";
 		String paramValue = req.getParameter(user);
 		
-		String session = (String) req.getSession().getAttribute("session");
+		LoginService.session(req.getSession().getId(), req.getSession());
 		RepetitionDao repository = new RepetitionDao(em);
 		List<Repetition> repetition = repository.findAll(paramValue);
 		String json = GSON.toJson(repetition);
@@ -42,15 +42,15 @@ public class RepetitionService {
 
 	}
 
-//	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
-//		resp.addHeader("Access-Control-Allow-Origin", "*");
-//		RepetitionDao repository = new RepetitionDao(em);
-//		List<Repetition> repetition = repository.findAll();
-//		String json = GSON.toJson(repetition);
-//		resp.setStatus(200);
-//		resp.setHeader("Content-Type", "application/json");
-//		resp.getOutputStream().println(json);
-//	}
+	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
+		resp.addHeader("Access-Control-Allow-Origin", "*");
+		RepetitionDao repository = new RepetitionDao(em);
+		List<Repetition> repetition = repository.findAll();
+		String json = GSON.toJson(repetition);
+		resp.setStatus(200);
+		resp.setHeader("Content-Type", "application/json");
+		resp.getOutputStream().println(json);
+	}
 
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");

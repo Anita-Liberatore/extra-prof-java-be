@@ -28,6 +28,9 @@ public class RoutesController extends HttpServlet {
 		String action = req.getServletPath();
 		
 		switch (action) {
+		case "/prova":
+			ProfessorService.getProva(req, resp);
+			break;
 		case "/professors":
 			try {
 				ProfessorService.addProfessor(req, resp);
@@ -107,6 +110,13 @@ public class RoutesController extends HttpServlet {
 				e3.printStackTrace();
 			}
 			break;
+		case "/professors-course-mobile":
+			try {
+				ProfessorService.getProfessorByCoursesMobile(req, resp);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e3) {
+				e3.printStackTrace();
+			}
+			break;
 		case "/admin-filter-panel":
 			try {
 				ProfessorService.getFilterPanelAdmin(req, resp);
@@ -119,6 +129,9 @@ public class RoutesController extends HttpServlet {
 			break;
 		case "/repetitions":
 			RepetitionService.getAllRepetitions(req, resp);
+			break;
+		case "/repetitions-admin":
+			RepetitionService.getAllRepetitionsForAdmin(resp);
 			break;
 		case "/courses":
 			CourseService.getAllCourses(resp);

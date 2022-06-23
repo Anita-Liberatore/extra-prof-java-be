@@ -24,11 +24,21 @@ public class LoginService {
 	private static final Gson GSON = new GsonBuilder().create();
 
 	public static void login(HttpServletRequest req, HttpServletResponse resp) {
-		HttpSession s = req.getSession();
-		String jsessionID = s.getId(); // estraggo il session ID
+		HttpSession session = req.getSession();
+        session.setAttribute("session", session.getId());
+		String jsessionID = session.getId(); // estraggo il session ID
 		System.out.println("JSessionID:" + jsessionID);
 
 	}
+	
+	public static void session(String sessionId, HttpSession session) {
+        session.setAttribute("session", sessionId);
+		String jsessionID = session.getId(); // estraggo il session ID
+		System.out.println("JSessionID:" + jsessionID);
+
+	}
+	
+	
 	
 	public static void getUserByEmail(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
@@ -42,9 +52,8 @@ public class LoginService {
 		if(user.getUsername()!=null) {
 			LoginService.login(req, resp);
 			HttpSession session = req.getSession(false);
-			session.setAttribute("userName", paramUsername);
-			session.setAttribute("session", session.getId());// salvo dei dati in sessione...
-
+			session.getAttribute("session");
+			
 			if (session.getId()!= null) {
 				String json = GSON.toJson(user);
 				resp.setStatus(200);

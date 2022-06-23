@@ -75,8 +75,11 @@ public class Professor implements Serializable {
 	}
 
 
+
 	@Override
 	public String toString() {
-		return "Todo [id=" + id + ", name=" + name + ", surname=" + surname + "]";
+		return "Professor [id=" + id + ", name=" + name + ", surname=" + surname+"]";
 	}	
+	
+	
 }

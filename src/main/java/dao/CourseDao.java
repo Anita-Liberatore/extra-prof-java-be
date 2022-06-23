@@ -2,13 +2,17 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import entity.Course;
+import entity.Professor;
 import utils.DbUtils;
 
 public class CourseDao {
@@ -59,6 +63,41 @@ public class CourseDao {
 			System.out.println(e);
 
 		}
+		
 		return -1;
+	}
+	
+	public Course courseByName(String name) throws ClassNotFoundException {
+		Course  course = new Course();
+		Connection con=null;
+		try {
+			con=DbUtils.connectDB();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+
+		Statement stmt;
+		try {
+
+			stmt = con.createStatement();              
+
+			ResultSet rs = stmt.executeQuery("SELECT name_course from course where name_course = '"+name +"'");
+
+			while (rs.next()) {
+				String nameCourse = rs.getString(1);
+				course.setCourseName(nameCourse);
+			}
+
+			stmt.close();
+			con.close();
+
+			return course;
+
+		} catch(SQLException ex) {
+			System.err.print("SQLException: ");
+			System.err.println(ex.getMessage());
+		}
+		return new Course();  
 	}
 }

@@ -13,6 +13,8 @@ public class ProfessorResponse {
 	private String surname;
 	
 	private List<String> hours = new ArrayList<>();
+	
+	private String courseName;
 
 	/**
 	 * @return the id
@@ -70,9 +72,25 @@ public class ProfessorResponse {
 		this.hours = hours;
 	}
 
+
+	/**
+	 * @return the courseName
+	 */
+	public String getCourseName() {
+		return courseName;
+	}
+
+	/**
+	 * @param courseName the courseName to set
+	 */
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
+	}
+
 	@Override
 	public String toString() {
-		return "ProfessorResponse [id=" + id + ", name=" + name + ", surname=" + surname + ", hours=" + hours + "]";
+		return "ProfessorResponse [id=" + id + ", name=" + name + ", surname=" + surname + ", hours=" + hours
+				+ ", courseName=" + courseName + "]";
 	}
 	
 	
