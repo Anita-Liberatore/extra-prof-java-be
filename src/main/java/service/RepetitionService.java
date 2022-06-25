@@ -31,8 +31,6 @@ public class RepetitionService {
 		
 		String user = "user";
 		String paramValue = req.getParameter(user);
-		
-		LoginService.session(req.getSession().getId(), req.getSession());
 		RepetitionDao repository = new RepetitionDao(em);
 		List<Repetition> repetition = repository.findAll(paramValue);
 		String json = GSON.toJson(repetition);
@@ -55,7 +53,7 @@ public class RepetitionService {
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
-		HttpSession sessionId = req.getSession();
+		HttpSession sessionId = req.getSession(false);
 		String json = Util.readInputStream(req.getInputStream());
 		Repetition repetition = GSON.fromJson(json, Repetition.class);
 		RepetitionDao repository = new RepetitionDao(em);

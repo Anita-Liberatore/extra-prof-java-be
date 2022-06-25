@@ -25,24 +25,17 @@ public class LoginService {
 
 	public static void login(HttpServletRequest req, HttpServletResponse resp) {
 		HttpSession session = req.getSession();
-        session.setAttribute("session", session.getId());
-		String jsessionID = session.getId(); // estraggo il session ID
-		System.out.println("JSessionID:" + jsessionID);
-
+		session.setAttribute("session", session);
+	    session.setMaxInactiveInterval(2*60*60);  // two hours
 	}
+		
 	
-	public static void session(String sessionId, HttpSession session) {
-        session.setAttribute("session", sessionId);
-		String jsessionID = session.getId(); // estraggo il session ID
-		System.out.println("JSessionID:" + jsessionID);
+	
+	public static void getUserLogin(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		resp.addHeader("Access-Control-Allow-Credentials", "true");
 
-	}
-	
-	
-	
-	public static void getUserByEmail(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
-		resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.setHeader("Access-Control-Allow-Credentials", "true");
+		
 		String username = "username";
 		
 		String paramUsername = req.getParameter(username);
@@ -51,9 +44,10 @@ public class LoginService {
 		User user = repository.userByEmail(paramUsername);
 		if(user.getUsername()!=null) {
 			LoginService.login(req, resp);
-			HttpSession session = req.getSession(false);
-			session.getAttribute("session");
-			
+			HttpSession session = req.getSession();
+			session.getAttribute("session"); 
+			user.setToken(session.getId());
+
 			if (session.getId()!= null) {
 				String json = GSON.toJson(user);
 				resp.setStatus(200);

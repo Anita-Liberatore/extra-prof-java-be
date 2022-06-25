@@ -5,9 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,13 +28,13 @@ import utils.Util;
 
 public class ProfessorService {	
 	static EntityManagerFactory emf = Persistence.createEntityManagerFactory("db");
-    static EntityManager em = emf.createEntityManager();
+	static EntityManager em = emf.createEntityManager();
 
 	private static final Gson GSON = new GsonBuilder().create();
 
 
 	public static void getAllProfessors(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		HttpSession s = req.getSession(false);
+		HttpSession session = req.getSession();
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		ProfessorDao repository = new ProfessorDao(em);
 		List<Professor> professorsList = repository.findAll();
@@ -45,136 +43,133 @@ public class ProfessorService {
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(json);
 	}
-	
+
 	public static void deleteProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException, NumberFormatException, ClassNotFoundException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		String id = "id";
 		String paramValue = req.getParameter(id);
 		ProfessorDao repository = new ProfessorDao(em);
 		int queryResult = repository.deleteProfessor(Long.parseLong(paramValue));
-		
+
 		if(queryResult==1) {
 			Util.setResponse(resp, "Ok", "No error code", "Entity deleted correctly");
 		}  else {
 			Util.setResponse(resp, "Error", "Entity not deleted correctly", "Error");
 		}
 	}
-	
+
 	public static void getProfessorByCourses(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession s = req.getSession(false);
+		HttpSession session = req.getSession();
 		String id = "id";
 		String paramValueCourse = req.getParameter(id);
-		
+
 		String day = "day";
 		String paramValueDay = req.getParameter(day);
-		
-		
-		
-		if(paramValueCourse!=null && paramValueCourse != "") {
-			
-			ProfessorDao repository = new ProfessorDao(em);
-			List<Professor> professorByCourse = repository.professorsByCourse(Long.parseLong(paramValueCourse));
-			
-			
-			
-			List<ProfessorResponse> professorData = new ArrayList<>();
-			
-			
-			
-			List<String> notDisponibility = new ArrayList<>();
 
-			for(Professor p: professorByCourse) {
-				notDisponibility.clear();
-				ProfessorResponse data = new ProfessorResponse();
-				List<ProfessorNotDisponibilityResponse> professorNotDisponibilityResponse = repository.getNotDisponibility(p.getId(), paramValueDay);
-				
-				for(ProfessorNotDisponibilityResponse d : professorNotDisponibilityResponse) {
-					notDisponibility.add(d.getHourRepetition());
+
+		if(session!=null) {
+			if(paramValueCourse!=null && paramValueCourse != "") {
+
+				ProfessorDao repository = new ProfessorDao(em);
+				List<Professor> professorByCourse = repository.professorsByCourse(Long.parseLong(paramValueCourse));
+
+				List<ProfessorResponse> professorData = new ArrayList<>();
+
+				List<String> notDisponibility = new ArrayList<>();
+
+				for(Professor p: professorByCourse) {
+					notDisponibility.clear();
+					ProfessorResponse data = new ProfessorResponse();
+					List<ProfessorNotDisponibilityResponse> professorNotDisponibilityResponse = repository.getNotDisponibility(p.getId(), paramValueDay);
+
+					for(ProfessorNotDisponibilityResponse d : professorNotDisponibilityResponse) {
+						notDisponibility.add(d.getHourRepetition());
+					}
+
+					List<String> hours = new ArrayList<>();
+					hours.add("15-16");
+					hours.add("16-17");
+					hours.add("17-18");
+					hours.add("18-19");
+
+					hours.removeAll(notDisponibility);
+
+					data.setId(p.getId());
+					data.setName(p.getName());
+					data.setSurname(p.getSurname());
+					data.setHours(hours);
+					professorData.add(data);
 				}
-				
-				List<String> hours = new ArrayList<>();
-				hours.add("15-16");
-				hours.add("16-17");
-				hours.add("17-18");
-				hours.add("18-19");
-				
-				hours.removeAll(notDisponibility);
-				
-				data.setId(p.getId());
-				data.setName(p.getName());
-				data.setSurname(p.getSurname());
-				data.setHours(hours);
-				professorData.add(data);
+
+				String json = GSON.toJson(professorData);
+				resp.setStatus(200);
+				resp.setHeader("Content-Type", "application/json");
+				resp.getOutputStream().println(json);
 			}
-			
-			String json = GSON.toJson(professorData);
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json");
-			resp.getOutputStream().println(json);
 		}
 	}
-	
+
 	public static void getProfessorByCoursesMobile(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		HttpSession s = req.getSession(false);
 		String id = "id";
 		String paramValueCourse = req.getParameter(id);
-		
+
 		String day = "day";
 		String paramValueDay = req.getParameter(day);
-		
-		
+
+
 		if(paramValueCourse!=null && paramValueCourse != "") {
-			
+
 			ProfessorDao repository = new ProfessorDao(em);
 			List<Professor> professorByCourse = repository.professorsByCourse(Long.parseLong(paramValueCourse));
-					
-			
+
+
 			List<ProfessorResponse> professorData = new ArrayList<>();
-			
-						
+
+
 			List<String> notDisponibility = new ArrayList<>();
 
 			for(Professor p: professorByCourse) {
 				notDisponibility.clear();
 				ProfessorResponse data = new ProfessorResponse();
 				List<ProfessorNotDisponibilityResponse> professorNotDisponibilityResponse = repository.getNotDisponibility(p.getId(), paramValueDay);
-				
+
 				for(ProfessorNotDisponibilityResponse d : professorNotDisponibilityResponse) {
 					notDisponibility.add(d.getHourRepetition());
 				}
-				
+
 				List<String> hours = new ArrayList<>();
 				hours.add("15-16");
 				hours.add("16-17");
 				hours.add("17-18");
 				hours.add("18-19");
-				
+
 				hours.removeAll(notDisponibility);
-				
+
 				data.setId(p.getId());
 				data.setName(p.getName());
 				data.setSurname(p.getSurname());
 				data.setHours(hours);
 				professorData.add(data);
 			}
-			
-            List<ResponseMobileBooking> response = new ArrayList<>();
+
+			List<ResponseMobileBooking> response = new ArrayList<>();
 			for(ProfessorResponse p: professorData) {
 				for(String h: p.getHours()) {
-				ResponseMobileBooking obj = new ResponseMobileBooking();
-				   obj.setId(p.getId());
-				   obj.setNameProfessor(p.getName() + " " +p.getSurname());
-				   obj.setHour(h);
-				   response.add(obj);
-				  
+					ResponseMobileBooking obj = new ResponseMobileBooking();
+					obj.setId(p.getId());
+					obj.setNameProfessor(p.getName() + " " +p.getSurname());
+					obj.setHour(h);
+					response.add(obj);
+
 				}
-				
+
 			}
-			
+
 			System.out.println(Arrays.asList(response)); // method 1.
-			
+
 			String json = GSON.toJson(response);
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json");
@@ -194,15 +189,26 @@ public class ProfessorService {
 		resp.getOutputStream().println(json);
 	}
 
-	
-	
+
+
 	public static void addProfessor(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		HttpSession session = req.getSession(false);
+		System.out.println(session);
 		String json = Util.readInputStream(req.getInputStream());
 		Professor professor = GSON.fromJson(json, Professor.class);
+
 		ProfessorDao repository = new ProfessorDao(em);
+		Professor professorExist = repository.professorByName(professor.getName(), professor.getSurname());
+		if(professorExist.getName()!=null && professorExist.getSurname() != null) {
+			if(professorExist.getName().toLowerCase().equalsIgnoreCase(professor.getName().toLowerCase()) && professorExist.getSurname().toLowerCase().equalsIgnoreCase(professor.getSurname().toLowerCase())) {
+				return;
+			}
+		}
 		int result = repository.addProfessor(professor);
+
+
 		System.out.println(result);
 		resp.setStatus(201);
 		resp.setHeader("Content-Type", "application/json");
@@ -223,28 +229,6 @@ public class ProfessorService {
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(json);
 	}
-	
-	public static void getProva(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		resp.setContentType("text/html;charset=UTF-8");
-		resp.addHeader("Access-Control-Allow-Origin", "*");
-        PrintWriter out = resp.getWriter();
-        String userName = req.getParameter("utente");
-        String sessionID = req.getParameter("sessione");
-        HttpSession s = req.getSession(false);
-        String jsessionID = s.getId(); // estraggo il session ID
-        System.out.println("JSessionID:" + jsessionID);
-        System.out.println("sessionID ricevuto:" + sessionID);
-        System.out.println("userName ricevuto:" + userName);
 
-        if (userName != null) {
-            s.setAttribute("userName", userName); // salvo dei dati in sessione...
-        }
-        if (sessionID!=null && jsessionID.equals(sessionID)) {
-            //System.out.println("sessione riconosciuta!");
-            out.print("sessione riconosciuta!");
-        } else {
-            //System.out.println(jsessionID);
-            out.print(jsessionID);
-        }
-	}
+
 }

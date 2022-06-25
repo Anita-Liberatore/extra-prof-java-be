@@ -2,6 +2,7 @@ package service;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,14 +10,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.CourseDao;
-import dao.ProfessorDao;
 import entity.Course;
-import response.Response;
 import utils.Util;
 
 
@@ -28,8 +28,9 @@ public class CourseService {
     private static final Gson GSON = new GsonBuilder().create();
 
 
-	public static void getAllCourses(HttpServletResponse resp) throws IOException {
+	public static void getAllCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
+		HttpSession session = req.getSession(false);
 		CourseDao repository = new CourseDao(em);
 		List<Course> coursesList = repository.findAll();
 		String json = GSON.toJson(coursesList);
@@ -67,10 +68,7 @@ public class CourseService {
 		}
 		
 		int result = repository.addCourse(course);
-		System.out.println(result);
-		resp.setStatus(201);
-		resp.setHeader("Content-Type", "application/json");
-		resp.getOutputStream().println(GSON.toJson(course));
+		Util.setResponse(resp, "Ok", "No error code", "Entity add correctly");
 
 	}
 

@@ -72,6 +72,41 @@ public class ProfessorDao {
     	return new ArrayList<>();  
     }
 
+    public Professor professorByName(String name, String surname) throws ClassNotFoundException {
+    	Professor  professor = new Professor();
+		Connection con=null;
+		try {
+			con=DbUtils.connectDB();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+
+		Statement stmt;
+		try {
+
+			stmt = con.createStatement();              
+
+			ResultSet rs = stmt.executeQuery("SELECT name_professor, surname from professor where name_professor = '"+name +"' and surname = '"+surname +"'");
+
+			while (rs.next()) {
+				String nameProf = rs.getString(1);
+				String surnameProf = rs.getString(2);
+				professor.setName(nameProf);
+				professor.setSurname(surnameProf);
+			}
+
+			stmt.close();
+			con.close();
+
+			return professor;
+
+		} catch(SQLException ex) {
+			System.err.print("SQLException: ");
+			System.err.println(ex.getMessage());
+		}
+		return new Professor();  
+	}
 
     
 	public int deleteProfessor(Long id) throws ClassNotFoundException {

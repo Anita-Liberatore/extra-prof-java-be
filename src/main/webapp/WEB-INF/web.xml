@@ -13,4 +13,9 @@
 		<servlet-name>HelloController</servlet-name>
 		<url-pattern>/hello/*</url-pattern>
 	</servlet-mapping>
+	<session-config>
+        <session-timeout>
+            1
+        </session-timeout>
+    </session-config>
 </web-app>

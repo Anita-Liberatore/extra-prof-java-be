@@ -14,6 +14,7 @@ public class User {
 	
 	private String username;
 
+	private String token;
 	/**
 	 * @return the id
 	 */
@@ -98,10 +99,25 @@ public class User {
 		this.username = username;
 	}
 
+
+	/**
+	 * @return the token
+	 */
+	public String getToken() {
+		return token;
+	}
+
+	/**
+	 * @param token the token to set
+	 */
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", role=" + role + ", password=" + password + ", name=" + name + ", surname="
-				+ surname + ", username=" + username + "]";
+				+ surname + ", username=" + username + ", token=" + token + "]";
 	}
 
 
