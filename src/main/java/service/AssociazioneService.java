@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dao.AssociazioneDao;
+import dao.CourseDao;
+import dao.ProfessorDao;
 import entity.Associazione;
 import request.AssociazioniRequest;
 import utils.Util;
@@ -36,13 +38,18 @@ public class AssociazioneService {
 		resp.getOutputStream().println(json);
 	}
 
-	public static void deleteAssociazione(HttpServletRequest req, HttpServletResponse resp) throws IOException, NumberFormatException, ClassNotFoundException {
+	public static void deleteAssociazione(HttpServletRequest req, HttpServletResponse resp) throws IOException, NumberFormatException, ClassNotFoundException, SQLException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		String id = "id";
 		String paramValue = req.getParameter(id);
 		AssociazioneDao repository = new AssociazioneDao(em);
+		AssociazioniRequest associazioneObj = new AssociazioniRequest();
+		associazioneObj = repository.findById(Long.parseLong(paramValue));
 		int queryResult = repository.deleteAssociazione(Long.parseLong(paramValue));
 		
+		CourseDao repositoryCourse = new CourseDao(em);
+		
+		int res = repositoryCourse.updateIsAssociato(associazioneObj.getIdCourse(), "N");
 		if(queryResult==1) {
 			Util.setResponse(resp, "Ok", "No error code", "Course-professor deleted correctly");
 		}  else {
@@ -56,8 +63,14 @@ public class AssociazioneService {
 		String json = Util.readInputStream(req.getInputStream());
 		AssociazioniRequest associazioniRequest = GSON.fromJson(json, AssociazioniRequest.class);
 		AssociazioneDao repository = new AssociazioneDao(em);
-		int result = repository.addAssociazione(associazioniRequest);
-		System.out.println(result);
+		associazioniRequest = repository.addAssociazione(associazioniRequest);
+		
+		CourseDao repositoryCourse = new CourseDao(em);
+		repositoryCourse.updateIsAssociato(associazioniRequest.getIdCourse(), "Y");
+		
+		ProfessorDao repoProfessor = new ProfessorDao(em);
+		repoProfessor.updateIsAssociato(associazioniRequest.getIdProfessor(), "Y");
+		
 		resp.setStatus(201);
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(GSON.toJson(associazioniRequest));

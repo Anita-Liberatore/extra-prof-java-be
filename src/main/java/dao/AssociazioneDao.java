@@ -43,7 +43,7 @@ public class AssociazioneDao {
 		return -1;
 	}
 	
-	public int addAssociazione(AssociazioniRequest associazioniRequest) throws ClassNotFoundException, SQLException {
+	public AssociazioniRequest addAssociazione(AssociazioniRequest associazioniRequest) throws ClassNotFoundException, SQLException {
 		Connection con = null;
 		con=DbUtils.connectDB();
 		
@@ -52,13 +52,55 @@ public class AssociazioneDao {
             prep.setLong(1, associazioniRequest.getIdCourse());
             prep.setLong(2, associazioniRequest.getIdProfessor());
             prep.executeUpdate ();
-	        return 1;
+	        return associazioniRequest;
 		} catch(SQLException  e){
 			System.out.println(e);
 
 		}
-		return -1;
+		return new AssociazioniRequest();
 	}
+	
+	public AssociazioniRequest findById(Long id) {
+		Connection con=null;
+    	AssociazioniRequest obj = new AssociazioniRequest();
+
+		try {
+			con=DbUtils.connectDB();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	    String query = "SELECT a.id_associazione, a.id_corso, a.id_docente " +
+	    		" FROM associazione_corso_docente a where id_associazione = '"+id +"'";
+	    
+	    Statement stmt;
+	    try {
+	  
+	      stmt = con.createStatement();              
+	  
+	      ResultSet rs = stmt.executeQuery(query);
+	      
+	      while (rs.next()) {
+	        Long idCorso = rs.getLong(2);
+	        Long idDocente = rs.getLong(3);
+	        	        
+	        obj.setIdCourse(idCorso);
+	        obj.setIdProfessor(idDocente);
+	        
+
+	      }
+
+	      stmt.close();
+	      con.close();
+	      
+	      return obj;
+
+	    } catch(SQLException ex) {
+	      System.err.print("SQLException: ");
+	      System.err.println(ex.getMessage());
+	    }
+		return new AssociazioniRequest();  
+	  }
 	
 	public List<Associazione> findAll() {
 		List<Associazione>  listAssociazione = new ArrayList<>();

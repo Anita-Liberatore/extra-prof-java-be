@@ -21,6 +21,9 @@ public class Course implements Serializable {
 
 	@Column(name = "name_course")
 	private String courseName;
+	
+	@Column(name = "is_associato")
+	private String isAssociato;
 
 	/**
 	 * @return the id
@@ -50,9 +53,24 @@ public class Course implements Serializable {
 		this.courseName = courseName;
 	}
 
+	
+	/**
+	 * @return the isAssociato
+	 */
+	public String getIsAssociato() {
+		return isAssociato;
+	}
+
+	/**
+	 * @param isAssociato the isAssociato to set
+	 */
+	public void setIsAssociato(String isAssociato) {
+		this.isAssociato = isAssociato;
+	}
+
 	@Override
 	public String toString() {
-		return "Course [id=" + id + ", courseName=" + courseName + "]";
+		return "Course [id=" + id + ", courseName=" + courseName + ", isAssociato=" + isAssociato + "]";
 	}
 	
 	

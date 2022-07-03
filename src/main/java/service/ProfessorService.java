@@ -1,7 +1,6 @@
 package service;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -34,10 +34,10 @@ public class ProfessorService {
 
 
 	public static void getAllProfessors(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		HttpSession session = req.getSession();
+  		HttpSession session = req.getSession();
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		ProfessorDao repository = new ProfessorDao(em);
-		List<Professor> professorsList = repository.findAll();
+		List<Professor> professorsList = repository.findAllProfessor();
 		String json = GSON.toJson(professorsList);
 		resp.setStatus(200);
 		resp.setHeader("Content-Type", "application/json");
@@ -60,59 +60,54 @@ public class ProfessorService {
 
 	public static void getProfessorByCourses(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession session = req.getSession();
 		String id = "id";
 		String paramValueCourse = req.getParameter(id);
 
 		String day = "day";
 		String paramValueDay = req.getParameter(day);
 
+		if(paramValueCourse!=null && paramValueCourse != "") {
+			ProfessorDao repository = new ProfessorDao(em);
+			List<Professor> professorByCourse = repository.professorsByCourse(Long.parseLong(paramValueCourse));
 
-		if(session!=null) {
-			if(paramValueCourse!=null && paramValueCourse != "") {
+			List<ProfessorResponse> professorData = new ArrayList<>();
 
-				ProfessorDao repository = new ProfessorDao(em);
-				List<Professor> professorByCourse = repository.professorsByCourse(Long.parseLong(paramValueCourse));
+			List<String> notDisponibility = new ArrayList<>();
 
-				List<ProfessorResponse> professorData = new ArrayList<>();
+			for(Professor p: professorByCourse) {
+				notDisponibility.clear();
+				ProfessorResponse data = new ProfessorResponse();
+				List<ProfessorNotDisponibilityResponse> professorNotDisponibilityResponse = repository.getNotDisponibility(p.getId(), paramValueDay);
 
-				List<String> notDisponibility = new ArrayList<>();
-
-				for(Professor p: professorByCourse) {
-					notDisponibility.clear();
-					ProfessorResponse data = new ProfessorResponse();
-					List<ProfessorNotDisponibilityResponse> professorNotDisponibilityResponse = repository.getNotDisponibility(p.getId(), paramValueDay);
-
-					for(ProfessorNotDisponibilityResponse d : professorNotDisponibilityResponse) {
-						notDisponibility.add(d.getHourRepetition());
-					}
-
-					List<String> hours = new ArrayList<>();
-					hours.add("15-16");
-					hours.add("16-17");
-					hours.add("17-18");
-					hours.add("18-19");
-
-					hours.removeAll(notDisponibility);
-
-					data.setId(p.getId());
-					data.setName(p.getName());
-					data.setSurname(p.getSurname());
-					data.setHours(hours);
-					professorData.add(data);
+				for(ProfessorNotDisponibilityResponse d : professorNotDisponibilityResponse) {
+					notDisponibility.add(d.getHourRepetition());
 				}
 
-				String json = GSON.toJson(professorData);
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json");
-				resp.getOutputStream().println(json);
+				List<String> hours = new ArrayList<>();
+				hours.add("15-16");
+				hours.add("16-17");
+				hours.add("17-18");
+				hours.add("18-19");
+
+				hours.removeAll(notDisponibility);
+
+				data.setId(p.getId());
+				data.setName(p.getName());
+				data.setSurname(p.getSurname());
+				data.setHours(hours);
+				professorData.add(data);
 			}
+
+			String json = GSON.toJson(professorData);
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
 		}
 	}
 
+
 	public static void getProfessorByCoursesMobile(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession s = req.getSession(false);
 		String id = "id";
 		String paramValueCourse = req.getParameter(id);
 
@@ -218,13 +213,14 @@ public class ProfessorService {
 
 
 
-	public static void getPing(HttpServletResponse resp) throws IOException {
+	public static void getPing(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		Response response = new Response();
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		response.setResult(Boolean.TRUE.toString());
 		response.setErrorCode("200 Ok");
 		response.setDescription("Ping api result");
 		String json = GSON.toJson(response);
+		Cookie[] cookies = req.getCookies();
 		resp.setStatus(200);
 		resp.setHeader("Content-Type", "application/json");
 		resp.getOutputStream().println(json);

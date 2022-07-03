@@ -16,6 +16,7 @@ import dao.LoginDao;
 import entity.User;
 import response.Response;
 
+
 public class LoginService {
 
 	static EntityManagerFactory emf = Persistence.createEntityManagerFactory("db");
@@ -23,18 +24,12 @@ public class LoginService {
 
 	private static final Gson GSON = new GsonBuilder().create();
 
-	public static void login(HttpServletRequest req, HttpServletResponse resp) {
-		HttpSession session = req.getSession();
-		session.setAttribute("session", session);
-	    session.setMaxInactiveInterval(2*60*60);  // two hours
-	}
-		
-	
 	
 	public static void getUserLogin(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
-		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
-		resp.addHeader("Access-Control-Allow-Credentials", "true");
+		resp.addHeader("Access-Control-Allow-Origin", "*");
 
+		resp.addHeader("Access-Control-Allow-Credentials", "true");
+		HttpSession session = req.getSession();
 		
 		String username = "username";
 		
@@ -43,15 +38,17 @@ public class LoginService {
 		LoginDao repository = new LoginDao(em);
 		User user = repository.userByEmail(paramUsername);
 		if(user.getUsername()!=null) {
-			LoginService.login(req, resp);
-			HttpSession session = req.getSession();
-			session.getAttribute("session"); 
-			user.setToken(session.getId());
-
+			
+			session.setAttribute("username", username);
+            session.setAttribute("role", user.getRole());
+            
 			if (session.getId()!= null) {
+				user.setToken(session.getId());
 				String json = GSON.toJson(user);
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json");
+				
+				
 				resp.getOutputStream().println(json);
 			} 
 		} else {
@@ -68,11 +65,8 @@ public class LoginService {
 
 	public static void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession session=req.getSession();  
-		if(session!=null) {
-			String jsessionID = session.getId(); // estraggo il session ID
-			System.out.println("JSessionID:" + jsessionID);
-			session.invalidate();  
+		    HttpSession session = req.getSession();
+		    session.invalidate();
 			Response response = new Response();
 			response.setDescription("Logout avvenuto correttamente");
 			response.setErrorCode("200");
@@ -80,13 +74,5 @@ public class LoginService {
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json");
 			resp.getOutputStream().println(json);
-		} else {
-			Response response = new Response();
-			response.setDescription("Logout NON avvenuto correttamente");
-			String json = GSON.toJson(response);
-			resp.setStatus(500);
-			resp.setHeader("Content-Type", "application/json");
-			resp.getOutputStream().println(json);
-		}
-	}
+		} 
 }

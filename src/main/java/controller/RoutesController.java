@@ -83,7 +83,7 @@ public class RoutesController extends HttpServlet {
 
 		switch (action) {
 		case "/ping":
-			ProfessorService.getPing(resp);
+			ProfessorService.getPing(req, resp);
 			break;
 		case "/login":
 			try {
@@ -142,7 +142,11 @@ public class RoutesController extends HttpServlet {
 			break;
 		case "/delete-associazione":
 			try {
-				AssociazioneService.deleteAssociazione(req, resp);
+				try {
+					AssociazioneService.deleteAssociazione(req, resp);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			} catch (NumberFormatException | ClassNotFoundException | IOException e1) {
 				e1.printStackTrace();
 			}

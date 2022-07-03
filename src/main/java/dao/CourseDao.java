@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import entity.Associazione;
 import entity.Course;
 import entity.Professor;
 import utils.DbUtils;
@@ -32,6 +33,49 @@ public class CourseDao {
 		return query.getResultList();
 
 	}
+	
+	public List<Course> findAllCourses() {
+		List<Course>  listCourse = new ArrayList<>();
+		Connection con=null;
+		try {
+			con=DbUtils.connectDB();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	    String query = "SELECT c.id_course, c.name_course, c.is_associato from course c";
+	    
+	    Statement stmt;
+	    try {
+	  
+	      stmt = con.createStatement();              
+	  
+	      ResultSet rs = stmt.executeQuery(query);
+	      
+	      while (rs.next()) {
+	    	Course course = new Course();
+	        Long id = rs.getLong(1);
+	        String nameCourse = rs.getString(2);
+	        String isAssociato = rs.getString(3);
+	        
+	        course.setId(id);
+	        course.setCourseName(nameCourse);
+	        course.setIsAssociato(isAssociato);
+	       	        
+	        listCourse.add(course);
+	      }
+
+	      stmt.close();
+	      con.close();
+	      
+	      return listCourse;
+
+	    } catch(SQLException ex) {
+	      System.err.print("SQLException: ");
+	      System.err.println(ex.getMessage());
+	    }
+		return new ArrayList<>();  
+	  }
 	
 	public int deleteCourse(Long id) throws ClassNotFoundException {
 		Connection con=null;
@@ -55,8 +99,27 @@ public class CourseDao {
 		con=DbUtils.connectDB();
 		
 		try {
-			PreparedStatement prep = con.prepareStatement ("INSERT INTO course (NAME_COURSE) VALUES (?)");
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO course (NAME_COURSE, IS_ASSOCIATO) VALUES (?,?)");
             prep.setString (1, couse.getCourseName());
+            prep.setString (2, "N");
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		
+		return -1;
+	}
+	
+	public int updateIsAssociato(Long idCourse, String isAssociato) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("UPDATE course SET is_associato = ? WHERE ID_COURSE = ? ");
+            prep.setString (1, isAssociato);
+            prep.setLong(2, idCourse);
             prep.executeUpdate ();
 	        return 1;
 		} catch(SQLException  e){

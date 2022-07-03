@@ -2,7 +2,6 @@ package service;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,7 +9,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,9 +28,9 @@ public class CourseService {
 
 	public static void getAllCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession session = req.getSession(false);
+
 		CourseDao repository = new CourseDao(em);
-		List<Course> coursesList = repository.findAll();
+		List<Course> coursesList = repository.findAllCourses();
 		String json = GSON.toJson(coursesList);
 		resp.setStatus(200);
 		resp.setHeader("Content-Type", "application/json");
@@ -71,6 +69,7 @@ public class CourseService {
 		Util.setResponse(resp, "Ok", "No error code", "Entity add correctly");
 
 	}
+	
 
 
 }

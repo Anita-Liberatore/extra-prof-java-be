@@ -30,6 +30,52 @@ public class ProfessorDao {
     		+ "    		FROM associazione_corso_docente a "
     		+ "    		JOIN professor p on a.id_docente = p.id_professor "
     		+ "    		JOIN course c on a.id_corso = c.id_course where id_corso = ";
+    
+    
+    public List<Professor> findAllProfessor() {
+		List<Professor>  listProfessor = new ArrayList<>();
+		Connection con=null;
+		try {
+			con=DbUtils.connectDB();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	    String query = "SELECT p.id_professor, p.name_professor, p.surname, p.is_associato from professor p ";
+	    
+	    Statement stmt;
+	    try {
+	  
+	      stmt = con.createStatement();              
+	  
+	      ResultSet rs = stmt.executeQuery(query);
+	      
+	      while (rs.next()) {
+	    	Professor professor = new Professor();
+	        Long id = rs.getLong(1);
+	        String nameProfessor = rs.getString(2);
+	        String surname = rs.getString(3);
+	        String isAssociato = rs.getString(4);
+	        
+	        professor.setId(id);
+	        professor.setName(nameProfessor);
+	        professor.setSurname(surname);
+	        professor.setIsAssociato(isAssociato);
+	       	        
+	        listProfessor.add(professor);
+	      }
+
+	      stmt.close();
+	      con.close();
+	      
+	      return listProfessor;
+
+	    } catch(SQLException ex) {
+	      System.err.print("SQLException: ");
+	      System.err.println(ex.getMessage());
+	    }
+		return new ArrayList<>();  
+	  }
 
     public List<ProfessorNotDisponibilityResponse> getNotDisponibility(Long id, String day) {
     	List<ProfessorNotDisponibilityResponse> notDisponibility = new ArrayList<>();
@@ -108,6 +154,23 @@ public class ProfessorDao {
 		return new Professor();  
 	}
 
+    public int updateIsAssociato(Long idProfessor, String isAssociato) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("UPDATE professor SET is_associato = ? WHERE ID_PROFESSOR = ? ");
+            prep.setString (1, isAssociato);
+            prep.setLong(2, idProfessor);
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		
+		return -1;
+	}
     
 	public int deleteProfessor(Long id) throws ClassNotFoundException {
 		Connection con=null;
@@ -212,9 +275,10 @@ public class ProfessorDao {
 		con=DbUtils.connectDB();
 		
 		try {
-			PreparedStatement prep = con.prepareStatement ("INSERT INTO professor (NAME_PROFESSOR, SURNAME) VALUES (?,?)");
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO professor (NAME_PROFESSOR, SURNAME, IS_ASSOCIATO) VALUES (?,?,?)");
             prep.setString (1, professor.getName());
             prep.setString (2, professor.getSurname());
+            prep.setString (3, "N");
             prep.executeUpdate ();
 	        return 1;
 		} catch(SQLException  e){
