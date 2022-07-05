@@ -14,7 +14,9 @@ import com.google.gson.GsonBuilder;
 
 import dao.LoginDao;
 import entity.User;
+import request.Auth;
 import response.Response;
+import utils.Util;
 
 
 public class LoginService {
@@ -25,54 +27,63 @@ public class LoginService {
 	private static final Gson GSON = new GsonBuilder().create();
 
 	
-	public static void getUserLogin(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
+	public static void getLogin(HttpServletRequest req, HttpServletResponse resp) throws NumberFormatException, ClassNotFoundException, IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-
 		resp.addHeader("Access-Control-Allow-Credentials", "true");
 		HttpSession session = req.getSession();
 		
-		String username = "username";
-		
-		String paramUsername = req.getParameter(username);
+		String json = Util.readInputStream(req.getInputStream());
+		Auth userAuth = GSON.fromJson(json, Auth.class);
 
 		LoginDao repository = new LoginDao(em);
-		User user = repository.userByEmail(paramUsername);
+		User user = repository.userByEmail(userAuth.getUsername());
 		if(user.getUsername()!=null) {
-			
-			session.setAttribute("username", username);
+			session.setAttribute("username", userAuth.getUsername());
             session.setAttribute("role", user.getRole());
+            req.setAttribute("role",user.getRole());
+            
             
 			if (session.getId()!= null) {
 				user.setToken(session.getId());
-				String json = GSON.toJson(user);
+				session.setAttribute("token", session.getId());
+				String responseJson = GSON.toJson(user);
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json");
 				
-				
-				resp.getOutputStream().println(json);
+				resp.getOutputStream().println(responseJson);
 			} 
 		} else {
 			Response response = new Response();
 			response.setDescription("Login non autorizzato");
 			response.setErrorCode("503");
-			String json = GSON.toJson(response);
+			String respError = GSON.toJson(response);
 			resp.setStatus(503);
 			resp.setHeader("Content-Type", "application/json");
-			resp.getOutputStream().println(json);
+			resp.getOutputStream().println(respError);
 		}
 
 	}
+	
 
 	public static void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		resp.addHeader("Access-Control-Allow-Origin", "*");
-		    HttpSession session = req.getSession();
-		    session.invalidate();
-			Response response = new Response();
-			response.setDescription("Logout avvenuto correttamente");
-			response.setErrorCode("200");
-			String json = GSON.toJson(response);
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json");
-			resp.getOutputStream().println(json);
+		    resp.addHeader("Access-Control-Allow-Origin", "*");
+		    if(Util.checkSession(req, resp)) {
+		    	req.getSession().invalidate();
+				Response response = new Response();
+				response.setDescription("Logout avvenuto correttamente");
+				response.setErrorCode("200");
+				String json = GSON.toJson(response);
+				resp.setStatus(200);
+				resp.setHeader("Content-Type", "application/json");
+				resp.getOutputStream().println(json);
+		    } else {
+		    	Response response = new Response();
+				response.setDescription("Logout non avenuto correttamente");
+				response.setErrorCode("500");
+				String json = GSON.toJson(response);
+				resp.setStatus(500);
+				resp.setHeader("Content-Type", "application/json");
+				resp.getOutputStream().println(json);
+		    }
 		} 
 }

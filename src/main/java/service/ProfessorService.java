@@ -163,8 +163,6 @@ public class ProfessorService {
 
 			}
 
-			System.out.println(Arrays.asList(response)); // method 1.
-
 			String json = GSON.toJson(response);
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json");

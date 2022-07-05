@@ -43,7 +43,7 @@ public class CourseDao {
 			e.printStackTrace();
 		}
 		
-	    String query = "SELECT c.id_course, c.name_course, c.is_associato from course c";
+	    String query = "SELECT c.id_course, c.name_course from course c";
 	    
 	    Statement stmt;
 	    try {
@@ -56,11 +56,9 @@ public class CourseDao {
 	    	Course course = new Course();
 	        Long id = rs.getLong(1);
 	        String nameCourse = rs.getString(2);
-	        String isAssociato = rs.getString(3);
 	        
 	        course.setId(id);
 	        course.setCourseName(nameCourse);
-	        course.setIsAssociato(isAssociato);
 	       	        
 	        listCourse.add(course);
 	      }
@@ -89,7 +87,9 @@ public class CourseDao {
 			return 1;
 		}catch(SQLException  e){
 			System.out.println(e);
-
+			if(e.getSQLState().equals("23503")) {
+				return 2;
+			}
 		}
 		return -1;
 	}

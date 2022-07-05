@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 
 import dao.RepetitionDao;
 import entity.Repetition;
+import response.Response;
 import utils.Util;
 
 public class RepetitionService {
@@ -27,27 +28,47 @@ public class RepetitionService {
 
 
 	public static void getAllRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		resp.addHeader("Access-Control-Allow-Origin", "*");
-		HttpSession session = req.getSession(false);
-		String user = "user";
-		String paramValue = req.getParameter(user);
-		RepetitionDao repository = new RepetitionDao(em);
-		List<Repetition> repetition = repository.findAll(paramValue);
-		String json = GSON.toJson(repetition);
-		resp.setStatus(200);
-		resp.setHeader("Content-Type", "application/json");
-		resp.getOutputStream().println(json);
+		resp.addHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+		resp.addHeader("Access-Control-Allow-Credentials", "true");
+		if(Util.checkSession(req, resp)) {
+			String user = "user";
+			String paramValue = req.getParameter(user);
+			RepetitionDao repository = new RepetitionDao(em);
+			List<Repetition> repetition = repository.findAll(paramValue);
+			String json = GSON.toJson(repetition);
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
 
+		} else {
+			Response response = new Response();
+			response.setDescription("Logout non avenuto correttamente");
+			response.setErrorCode("500");
+			String json = GSON.toJson(response);
+			resp.setStatus(500);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
+		}
 	}
 
-	public static void getAllRepetitionsForAdmin(HttpServletResponse resp) throws IOException {
+	public static void getAllRepetitionsForAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
-		RepetitionDao repository = new RepetitionDao(em);
-		List<Repetition> repetition = repository.findAll();
-		String json = GSON.toJson(repetition);
-		resp.setStatus(200);
-		resp.setHeader("Content-Type", "application/json");
-		resp.getOutputStream().println(json);
+		if(Util.checkSession(req, resp)) {
+			RepetitionDao repository = new RepetitionDao(em);
+			List<Repetition> repetition = repository.findAll();
+			String json = GSON.toJson(repetition);
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
+		} else {
+			Response response = new Response();
+			response.setDescription("Logout non avenuto correttamente");
+			response.setErrorCode("500");
+			String json = GSON.toJson(response);
+			resp.setStatus(500);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
+		}
 	}
 
 	public static void addRepetitions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, SQLException {

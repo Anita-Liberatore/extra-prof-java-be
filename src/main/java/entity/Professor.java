@@ -26,9 +26,6 @@ public class Professor implements Serializable {
 	@Column(name = "surname")
 	private String surname;
 	
-	@Column(name = "is_associato")
-	private String isAssociato;
-
 
 	/**
 	 * @return the id
@@ -78,26 +75,12 @@ public class Professor implements Serializable {
 	}
 
 
-	/**
-	 * @return the isAssociato
-	 */
-	public String getIsAssociato() {
-		return isAssociato;
-	}
-
-
-	/**
-	 * @param isAssociato the isAssociato to set
-	 */
-	public void setIsAssociato(String isAssociato) {
-		this.isAssociato = isAssociato;
-	}
-
-
 	@Override
 	public String toString() {
-		return "Professor [id=" + id + ", name=" + name + ", surname=" + surname + ", isAssociato=" + isAssociato + "]";
-	}	
-	
+		return "Professor [id=" + id + ", name=" + name + ", surname=" + surname + "]";
+	}
+
+
+
 	
 }

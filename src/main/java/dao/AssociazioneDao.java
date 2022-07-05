@@ -60,6 +60,25 @@ public class AssociazioneDao {
 		return new AssociazioniRequest();
 	}
 	
+	public int updateRepetitionFromAssociationAction(Long idProfessor, Long idCourse, Long id) throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		con=DbUtils.connectDB();
+		
+		try {
+			PreparedStatement prep = con.prepareStatement ("UPDATE repetitions SET status = ? WHERE ID_PROFESSOR = ? AND ID_COURSE = ? AND ID_REPETITIONS = ? ");
+			prep.setString(1, "D");
+			prep.setLong(2, idProfessor);
+			prep.setLong(3, idCourse);
+			prep.setLong(4, id);
+            prep.executeUpdate ();
+	        return 1;
+		} catch(SQLException  e){
+			System.out.println(e);
+
+		}
+		return -1;
+	}
+	
 	public AssociazioniRequest findById(Long id) {
 		Connection con=null;
     	AssociazioniRequest obj = new AssociazioniRequest();

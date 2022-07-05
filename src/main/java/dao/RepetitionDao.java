@@ -81,6 +81,7 @@ public class RepetitionDao {
 		}
 		return -1;
 	}
+	
 
 	public List<Repetition> findAll(String userParam) {
 		List<Repetition>  listRepetitions = new ArrayList<>();
@@ -147,7 +148,7 @@ public class RepetitionDao {
 			e.printStackTrace();
 		}
 
-		String query = "SELECT r.id_repetitions, p.name_professor, p.surname, c.name_course, r.hour_repetition, r.day_repetitions, r.status, r.user_repetition "
+		String query = "SELECT r.id_repetitions, r.id_professor, r.id_course, p.name_professor, p.surname, c.name_course, r.hour_repetition, r.day_repetitions, r.status, r.user_repetition "
 				+ "	 FROM repetitions r "
 				+ "	 JOIN professor p on r.id_professor = p.id_professor "
 				+ "	 JOIN course c on r.id_course = c.id_course ";
@@ -162,15 +163,19 @@ public class RepetitionDao {
 			while (rs.next()) {
 				Repetition repetition = new Repetition();
 				Long id = rs.getLong(1);
-				String nameProfessor = rs.getString(2);
-				String surname = rs.getString(3);
-				String nameCourse = rs.getString(4);
-				String hour = rs.getString(5);
-				String day = rs.getString(6);
-				String status = rs.getString(7);
-				String user = rs.getString(8);
+				Long idProf = rs.getLong(2);
+				Long idDocent = rs.getLong(3);
+				String nameProfessor = rs.getString(4);
+				String surname = rs.getString(5);
+				String nameCourse = rs.getString(6);
+				String hour = rs.getString(7);
+				String day = rs.getString(8);
+				String status = rs.getString(9);
+				String user = rs.getString(10);
 
 				repetition.setId(id);
+				repetition.setIdProfessor(idProf);
+				repetition.setIdCourse(idDocent);
 				repetition.setNameProfessor(nameProfessor);
 				repetition.setSurnameProfessor(surname);
 				repetition.setCourseName(nameCourse);

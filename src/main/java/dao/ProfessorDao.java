@@ -41,7 +41,7 @@ public class ProfessorDao {
 			e.printStackTrace();
 		}
 		
-	    String query = "SELECT p.id_professor, p.name_professor, p.surname, p.is_associato from professor p ";
+	    String query = "SELECT p.id_professor, p.name_professor, p.surname from professor p ";
 	    
 	    Statement stmt;
 	    try {
@@ -55,12 +55,10 @@ public class ProfessorDao {
 	        Long id = rs.getLong(1);
 	        String nameProfessor = rs.getString(2);
 	        String surname = rs.getString(3);
-	        String isAssociato = rs.getString(4);
 	        
 	        professor.setId(id);
 	        professor.setName(nameProfessor);
 	        professor.setSurname(surname);
-	        professor.setIsAssociato(isAssociato);
 	       	        
 	        listProfessor.add(professor);
 	      }
@@ -275,10 +273,9 @@ public class ProfessorDao {
 		con=DbUtils.connectDB();
 		
 		try {
-			PreparedStatement prep = con.prepareStatement ("INSERT INTO professor (NAME_PROFESSOR, SURNAME, IS_ASSOCIATO) VALUES (?,?,?)");
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO professor (NAME_PROFESSOR, SURNAME) VALUES (?,?)");
             prep.setString (1, professor.getName());
             prep.setString (2, professor.getSurname());
-            prep.setString (3, "N");
             prep.executeUpdate ();
 	        return 1;
 		} catch(SQLException  e){

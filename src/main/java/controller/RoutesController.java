@@ -22,6 +22,8 @@ import service.RepetitionService;
 public class RoutesController extends HttpServlet {
 
 	private static final long serialVersionUID = -8818717035593737509L;
+	
+	
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,6 +34,13 @@ public class RoutesController extends HttpServlet {
 			try {
 				ProfessorService.addProfessor(req, resp);
 			} catch (ClassNotFoundException | IOException | SQLException e2) {
+				e2.printStackTrace();
+			}
+			break;
+		case "/login":
+			try {
+				LoginService.getLogin(req, resp);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e2) {
 				e2.printStackTrace();
 			}
 			break;
@@ -85,13 +94,6 @@ public class RoutesController extends HttpServlet {
 		case "/ping":
 			ProfessorService.getPing(req, resp);
 			break;
-		case "/login":
-			try {
-				LoginService.getUserLogin(req, resp);
-			} catch (NumberFormatException | ClassNotFoundException | IOException e2) {
-				e2.printStackTrace();
-			}
-			break;
 		case "/logout":
 
 			LoginService.logout(req, resp);
@@ -128,7 +130,7 @@ public class RoutesController extends HttpServlet {
 			RepetitionService.getAllRepetitions(req, resp);
 			break;
 		case "/repetitions-admin":
-			RepetitionService.getAllRepetitionsForAdmin(resp);
+			RepetitionService.getAllRepetitionsForAdmin(req, resp);
 			break;
 		case "/courses":
 			CourseService.getAllCourses(req,resp);
@@ -162,4 +164,5 @@ public class RoutesController extends HttpServlet {
 			break;
 		}	
 	}
+
 }
