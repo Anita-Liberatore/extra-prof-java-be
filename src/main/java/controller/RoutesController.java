@@ -91,23 +91,11 @@ public class RoutesController extends HttpServlet {
 		String action = req.getServletPath();
 
 		switch (action) {
-		case "/ping":
-			ProfessorService.getPing(req, resp);
-			break;
 		case "/logout":
-
 			LoginService.logout(req, resp);
-
 			break;
 		case "/professors":
 			ProfessorService.getAllProfessors(req, resp);
-			break;
-		case "/professors-course":
-			try {
-				ProfessorService.getProfessorByCourses(req, resp);
-			} catch (NumberFormatException | ClassNotFoundException | IOException e3) {
-				e3.printStackTrace();
-			}
 			break;
 		case "/professors-course-mobile":
 			try {

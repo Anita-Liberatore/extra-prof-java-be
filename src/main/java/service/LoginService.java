@@ -49,7 +49,6 @@ public class LoginService {
 				String responseJson = GSON.toJson(user);
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json");
-				
 				resp.getOutputStream().println(responseJson);
 			} 
 		} else {
