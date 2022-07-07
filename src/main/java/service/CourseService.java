@@ -66,7 +66,13 @@ public class CourseService {
 		}
 		
 		int result = repository.addCourse(course);
-		Util.setResponse(resp, "Ok", "No error code", "Entity add correctly");
+		if(result==1) {
+			Util.setResponse(resp, "Ok", "No error code", "Entity add correctly");
+
+		} else {
+			Util.setResponse(resp, "ERROR", "error code", "Entity NOT add correctly");
+
+		}
 
 	}
 	

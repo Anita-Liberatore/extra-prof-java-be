@@ -99,9 +99,8 @@ public class CourseDao {
 		con=DbUtils.connectDB();
 		
 		try {
-			PreparedStatement prep = con.prepareStatement ("INSERT INTO course (NAME_COURSE, IS_ASSOCIATO) VALUES (?,?)");
+			PreparedStatement prep = con.prepareStatement ("INSERT INTO course (NAME_COURSE) VALUES (?)");
             prep.setString (1, couse.getCourseName());
-            prep.setString (2, "N");
             prep.executeUpdate ();
 	        return 1;
 		} catch(SQLException  e){

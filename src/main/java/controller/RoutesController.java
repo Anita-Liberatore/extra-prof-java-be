@@ -112,7 +112,7 @@ public class RoutesController extends HttpServlet {
 			}
 			break;
 		case "/associazioni":
-			AssociazioneService.getAllAssociazioni(resp);
+			AssociazioneService.getAllAssociazioni(req,resp);
 			break;
 		case "/repetitions":
 			RepetitionService.getAllRepetitions(req, resp);
