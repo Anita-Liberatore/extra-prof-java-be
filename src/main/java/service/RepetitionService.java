@@ -35,18 +35,16 @@ public class RepetitionService {
 			String role = "role";
 			String paramRole = req.getParameter(role);
 			req.setAttribute("roleSession", paramRole);
-			String roleSession = (String) req.getAttribute("roleSession");
-			if(roleSession!=null && roleSession.equalsIgnoreCase("A") || roleSession.equalsIgnoreCase("C")) {
-				RepetitionDao repository = new RepetitionDao(em);
-				List<Repetition> repetition = repository.findAll(paramValue);
-				String json = GSON.toJson(repetition);
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json");
-				resp.getOutputStream().println(json);
-			}
+			RepetitionDao repository = new RepetitionDao(em);
+			List<Repetition> repetition = repository.findAll(paramValue);
+			String json = GSON.toJson(repetition);
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json");
+			resp.getOutputStream().println(json);
+
 		} else {
 			Response response = new Response();
-			response.setDescription("Logout non avenuto correttamente");
+			response.setDescription("Errore");
 			response.setErrorCode("500");
 			String json = GSON.toJson(response);
 			resp.setStatus(500);
@@ -58,7 +56,6 @@ public class RepetitionService {
 	public static void getAllRepetitionsForAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.addHeader("Access-Control-Allow-Origin", "*");
 		if(Util.checkSession(req, resp)) {
-			String roleSession = (String) req.getAttribute("roleSession");
 			RepetitionDao repository = new RepetitionDao(em);
 			List<Repetition> repetition = repository.findAll();
 			String json = GSON.toJson(repetition);
@@ -67,7 +64,7 @@ public class RepetitionService {
 			resp.getOutputStream().println(json);
 		} else {
 			Response response = new Response();
-			response.setDescription("Logout non avenuto correttamente");
+			response.setDescription("Errore");
 			response.setErrorCode("500");
 			String json = GSON.toJson(response);
 			resp.setStatus(500);
